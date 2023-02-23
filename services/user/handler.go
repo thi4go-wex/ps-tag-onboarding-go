@@ -18,7 +18,7 @@ func (s *UserService) HandleUserGet(ctx echo.Context) error {
 
 	user, err := s.processUserGet(userID)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, err.Error())
+		return ctx.JSON(http.StatusInternalServerError, err)
 	}
 
 	return ctx.JSON(http.StatusOK, UserGetResponse{
@@ -41,12 +41,12 @@ func (s *UserService) HandleUserSet(ctx echo.Context) error {
 	req := new(UserSetRequest)
 	err := ctx.Bind(req)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, err.Error())
+		return ctx.JSON(http.StatusBadRequest, err)
 	}
 
 	err = ctx.Validate(req)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, err.Error())
+		return ctx.JSON(http.StatusBadRequest, err)
 	}
 
 	err = s.processUserSet(&User{
@@ -59,4 +59,9 @@ func (s *UserService) HandleUserSet(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, UserSetResponse{
 		Success: true,
 	})
+}
+
+func (s *UserService) RegisterRoutes(e *echo.Echo) {
+	e.GET(RouteUser, s.HandleUserGet)
+	e.POST(RouteUser, s.HandleUserSet)
 }

@@ -17,6 +17,11 @@ func New() *Server {
 }
 
 func (s *Server) Run() {
+	e := echo.New()
+
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
 	// New DB based on config. For now we use mongo.
 	mongo, err := db.NewMongoDB()
 	if err != nil {
@@ -28,13 +33,7 @@ func (s *Server) Run() {
 		log.Fatal(err)
 	}
 
-	e := echo.New()
-
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
-	e.GET(user.RouteUser, userService.HandleUserGet)
-	e.POST(user.RouteUser, userService.HandleUserSet)
+	userService.RegisterRoutes(e)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
