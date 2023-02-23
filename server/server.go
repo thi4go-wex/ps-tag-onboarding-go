@@ -22,7 +22,6 @@ func (s *Server) Run() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// New DB based on config. For now we use mongo.
 	mongo, err := db.NewMongoDB()
 	if err != nil {
 		log.Fatal(err)
